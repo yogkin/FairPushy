@@ -1,0 +1,54 @@
+# yaml 配置
+version: '3'
+services:
+  web:
+    image: nginx
+    ports:
+    - "8089:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./web/build/web:/opt/web
+    command: [nginx-debug, '-g', 'daemon off;']
+  # db:
+  #     # 容器名(以后的控制都通过这个)
+  #   container_name: mysql
+  #     # 重启策略
+  #   restart: always
+  #   image: mysql
+  #   ports:
+  #     - "3306:3306"
+  #   volumes:
+  #      # 挂挂载配置文件
+  #     - ./mysql/sql:/docker-entrypoint-initdb.d
+  #     # 挂挂载配置文件
+  #     - ./mysql/conf:/etc/mysql/conf.d
+  #     # 挂载日志
+  #     - ./mysql/logs:/logs
+  #     # 挂载数据
+  #     - ./mysql/data:/var/lib/mysql
+  #   command: --default-authentication-plugin=mysql_native_password
+  #   environment:
+  #     # root 密码
+  #     MYSQL_ROOT_PASSWORD: 123456
+
+  db:
+    image: mysql
+    # NOTE: use of "mysql_native_password" is not recommended: https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password
+    # (this is just an example, not intended to be a production configuration)
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    ports:
+    - "3306:3306"
+    volumes:
+      # 挂挂载配置文件
+      - ./mysql/sql:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8081:8080
+
+    
